@@ -1,0 +1,109 @@
+#include<reg51.h>
+sbit rs =  P2^0;
+sbit e =  P2^1;
+sbit s1 = P3^0;
+sbit s2 = P3^1;
+sbit s3 = P3^2;
+sbit s4 = P3^3;
+sbit s5 = P3^4;
+sbit s6 = P3^5;
+sbit s7 = P3^6;
+sbit s8 = P3^7;
+int ptr1=0, ptr2=0;
+#define l P1
+void delay(int);
+void w_data(char);
+void w_command(int);
+void lcd_init();
+void wra(char i){
+w_command(0x80+ptr1);
+w_data(i);
+ptr1++;
+delay(5);
+}
+
+ void wrd(char i){
+w_command(0xC0+ptr2);
+w_data(i);
+ptr2++;
+delay(5);
+}
+
+void main(){
+lcd_init();
+while(1){
+s1=0;
+s2=0;
+s3=0;
+s4=0;
+s5=0;
+s6=0;
+s7=0;
+s8=0;
+ if(s1==1){
+  wra('A');
+ }
+ if(s2==1){
+  wra('B');
+ }
+ if(s3==1){
+  wra('C');
+ }
+ if(s4==1){
+  wra('D');
+ }
+
+ if(s5==1){
+  wrd('1');
+ }
+ if(s6==1){
+  wrd('2');
+ }
+ if(s7==1){
+  wrd('3');
+ }
+ if(s8==1){
+  wrd('4');
+ }
+ delay(5);
+}
+
+}
+
+void lcd_init()
+{
+w_command(0x38);
+w_command(0x0C);
+w_command(0x01);
+w_command(0x80);
+       
+}
+
+void w_command(int x)
+{
+    rs = 0;
+P1 = x;
+e = 1;
+delay(5);
+e = 0;
+delay(5);
+}
+
+void w_data(char x)
+{
+rs = 1;
+P1 = x;
+e = 1;
+delay(2);
+e = 0;
+delay(2);
+}
+
+
+void delay(int x){
+ int i,j;
+ for(i=0;i<x;i++){
+  for(j=0;j<10000;j++){
+}
+}
+}

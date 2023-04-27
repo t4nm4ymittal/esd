@@ -1,0 +1,292 @@
+#include<reg51.h>
+
+sbit rs = P2 ^ 0;
+sbit e = P2 ^ 1;
+
+sbit r0 = P3 ^ 0;
+sbit r1 = P3 ^ 1;
+sbit r2 = P3 ^ 2;
+sbit r3 = P3 ^ 3;
+sbit c0 = P3 ^ 4;
+sbit c1 = P3 ^ 5;
+sbit c2 = P3 ^ 6;
+sbit c3 = P3 ^ 7;
+
+char s1[]="Enter No.1";
+char s2[]="Enter No.2";
+char res[]="result";
+
+int ptr1 = 0, ptr2 = 0;
+#define l P1
+void delay(int);
+void w_data(char);
+void w_command(int);
+void lcd_init();
+char scan_key();
+
+void wra(char i) {
+  w_command(0x80 + ptr1);
+  w_data(i);
+  ptr1++;
+}
+
+void wrd(char i) {
+  w_command(0xC0 + ptr2);
+  w_data(i);
+  ptr2++;
+  delay(1);
+}
+
+int get_num(char ch){
+  switch (ch) {
+  case '0':
+    return 0;
+    break;
+  case '1':
+    return 1;
+    break;
+  case '2':
+    return 2;
+    break;
+  case '3':
+    return 3;
+    break;
+  case '4':
+    return 4;
+    break;
+  case '5':
+    return 5;
+    break;
+  case '6':
+    return 6;
+    break;
+  case '7':
+    return 7;
+    break;
+  case '8':
+    return 8;
+    break;
+  case '9':
+    return 9;
+    break;
+  }
+  return 0;
+}
+void disp_num(int output){
+
+  int i=0;
+    char out[16];
+    while(output>0){
+        out[i]=output%10+48;
+        output=output/10;
+        i++;
+    }
+    while(i>=0){
+        wrd(out[i--]);
+    }
+}
+
+
+int main(void) {
+  while (1) {
+   
+    unsigned int k = 0, m = 0, n = 0;
+    int k2, k1;
+    char key, key1;
+    unsigned char ch2;
+    lcd_init();
+    while (s1[k] != '\0') {
+      wra(s1[k]);
+      k++;
+    }
+
+    key = scan_key();
+    while(!(key=='+' || key=='-' || key == '='|| key == '*'|| key == '/')){
+        int temp = get_num(key);
+        k2=k2*10+temp;
+        key=scan_key();
+    }
+    ch2=key;
+   
+    ptr1=ptr2=0;
+    w_command(0x80);
+    w_command(0x01);
+    w_command(0xC0);
+    w_command(0x01);
+
+    while (s2[m] != '\0') {
+      wra(s2[m]);
+      m++;
+    }
+
+    key1 = scan_key();
+    while(!(key1=='+' || key1=='-' || key1 == '='|| key1 == '*'|| key1 == '/')){
+        int temp = get_num(key1);
+        k1=k1*10+temp;
+        key1=scan_key();
+    }
+
+    ptr1=ptr2=0;
+    w_command(0x80);
+    w_command(0x01);
+    w_command(0xC0);
+    w_command(0x01);
+
+    while (res[m] != '\0') {
+      wra(res[m]);
+      m++;
+    }
+
+    switch (ch2) {
+    case '+':
+      disp_num(k1 + k2);
+      break;
+    case '-':
+      disp_num(k2 - k1);
+      break;
+    case '*':
+      disp_num(k2 * k1);
+      break;
+    case '/':
+      disp_num(k2 / k1);
+      break;
+    }
+
+    return 0;
+  }
+}
+
+char scan_key() {
+unsigned char c;
+c='s';
+while(!(c=='0' && c=='1' &&  c=='2' && c=='3' && c=='4' && c=='5' && c=='6' && c=='7' && c=='8'
+&& c=='9' && c=='+' && c=='-' && c=='#' && c=='$' && c=='*' && c=='/' ))
+{
+r0=0;r1=1;r2=1;r3=1;
+if(c0==0 && r0==0){
+wrd('7');
+delay(100000);
+return c='7';
+}
+if(c1==0 && r0==0){
+wrd('8');
+delay(100000);
+return c= '8';
+}
+if(c2==0 && r0==0){
+wrd('9');
+delay(100000);
+return c= '9';
+}
+if(c3==0 && r0==0){
+wrd('/');
+delay(100000);
+return c= '/';
+}
+ 
+r0=1;r1=0;r2=1;r3=1;
+
+if(c0==0 && r1==0){
+wrd('4');
+delay(100000);
+return c= '4';
+}
+
+if(c1==0 && r1==0){
+wrd('5');
+delay(100000);
+return c= '5';
+}
+
+if(c2==0 && r1==0){
+wrd('6');
+delay(100000);
+return c= '6';
+}
+
+if(c3==0 && r1==0){
+wrd('*');
+delay(100000);
+return c= '*';
+}
+
+r0=1;r1=1;r2=0;r3=1;
+
+if(c0==0 && r2==0){
+wrd('1');
+delay(100000);
+return c= '1';
+}
+if(c1==0 && r2==0){
+wrd('2');
+delay(100000);
+return c= '2';
+}
+if(c2==0 && r2==0){
+wrd('3');
+delay(100000);
+return c= '3';
+}
+if(c3==0 && r2==0){
+wrd('-');
+delay(100000);
+return c= '-';
+}
+
+r0=1;r1=1;r2=1;r3=0;
+ ///////////////
+if(c0==0 && r3==0){
+wrd('#');
+delay(100000);
+return c= '#';
+}
+if(c1==0 && r3==0){
+wrd('0');
+delay(100000);
+return c= '0';
+}
+if(c2==0 && r3==0){
+wrd('=');
+delay(100000);
+return c= '=';
+}
+if(c3==0 && r3==0){
+wrd('+');
+delay(100000);
+return c= '+';
+}
+}
+return 0;
+}
+
+void lcd_init() {
+  w_command(0x38);
+  w_command(0x0C);
+  w_command(0x01);
+  w_command(0x80);
+}
+
+void w_command(int x) {
+  rs = 0;
+  P1 = x;
+  e = 1;
+  delay(1);
+  e = 0;
+  delay(1);
+}
+
+void w_data(char x) {
+  rs = 1;
+  P1 = x;
+  e = 1;
+  delay(1);
+  e = 0;
+  delay(1);
+}
+
+void delay(int x) {
+  int i, j;
+  for (i = 0; i < x; i++) {
+    for (j = 0; j < 10000; j++) {}
+  }
+}

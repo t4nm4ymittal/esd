@@ -1,0 +1,92 @@
+Blink LED’s in a spiral pattern with increment  
+//write a program to blink the led in rotation.
+#include<reg51.h>
+#define L1 P2
+void delay(int);
+
+void main(){
+int count = 1,i, temp, lower=0, upper=0;
+int n = 4;
+while(n--){
+// FIRST UNSET ALL THE BITS
+i=0;
+
+L1 =0;
+
+temp = count;
+i=0;
+for(i; i<temp; i++)
+{
+L1 = L1|1<<i;
+}
+
+delay(10);
+
+lower = 0;
+upper = temp-1;
+i=upper+1;
+for(i=0;i<8;i++){
+  L1 = L1^1<<i;
+L1 = L1|1<<(i+count)%8;
+delay(10);
+}
+delay(10);
+count++;
+}
+}
+
+
+void delay(int x){
+ int i,j;
+ for(i=0;i<x;i++){
+  for(j=0;j<10000;j++){
+}
+}
+}
+
+   Blink LED in a WAVE form   
+//write a program to blink the led in rotation.
+#include<reg51.h>
+#define L1 P2
+void delay(int);
+void waveForm();
+void main()   {
+waveForm();
+}
+
+void waveForm()
+{
+int i = 0;
+// sabhko unset
+L1 = 0;
+while(1){
+   // L1=L1|1<<0;
+// L1=L1|1<<(4)
+for(i=0; i<4; i++)
+{
+           
+ 
+L1=L1|(1<<i);
+L1=L1|1<<(i+4);
+            delay(5);
+}
+        for(i=3; i>=0; i--)
+{
+           
+ 
+L1=L1^(1<<i);
+L1=L1^1<<(i+4);
+            delay(5);
+}
+       
+       
+}
+}
+
+void delay(int x){
+ int i,j;
+ for(i=0;i<x;i++){
+  for(j=0;j<10000;j++){
+}
+}
+}

@@ -1,0 +1,286 @@
+#include<reg51.h>
+sbit rs =  P2^0;
+sbit e =  P2^1;
+sbit s1 = P3^0;
+sbit s2 = P3^1;
+sbit s3 = P3^2;
+sbit s4 = P3^3;
+sbit s5 = P3^4;
+sbit s6 = P3^5;
+sbit s7 = P3^6;
+sbit s8 = P3^7;
+
+sbit plus = P2^3;
+sbit minus = P2^4;
+sbit mul = P2^5;
+sbit equ = P2^6;
+int j = 0;
+char number[16];
+int i = 0;
+int count = 0;
+int res = 0;
+char displaynum[16];
+
+int a = 0;
+int ptr1=0, ptr2=0;
+#define l P1
+void delay(int);
+void w_data(char);
+void w_command(int);
+void lcd_init();
+int num1 = 0;
+int num2 = 0;
+char op = '#';
+void wra(char i){
+w_command(0x80+ptr1);
+w_data(i);
+ptr1++;
+// delay(5);
+}
+
+void wrd(char i){
+w_command(0xC0+ptr2);
+w_data(i);
+ptr2++;
+delay(5);
+}
+
+void main(){
+lcd_init();
+s1=0;
+s2=0;
+s3=0;
+s4=0;
+s5=0;
+s6=0;
+s7=0;
+s8=0;
+
+wra('E');
+wra('n');
+wra('t');
+wra('e');
+wra('r');
+wra(' ');
+wra('F');
+wra('i');
+wra('r');
+wra('s');
+wra('t');
+delay(5);
+plus = 0;
+minus = 0;
+mul = 0;
+equ = 0;
+
+while(1){
+
+ if(s1==1){
+  wrd('1');
+  num1 = num1*10;
+  num1 = num1+1;
+ }
+ if(s2==1){
+  wrd('2');
+  num1 = num1*10;
+  num1 = num1+2;
+ }
+ if(s3==1){
+  wrd('3');
+  num1 = num1*10;
+  num1 = num1+3;
+ }
+ if(s4==1){
+  wrd('4');
+  num1 = num1*10;
+  num1 = num1+4;
+ }
+
+ if(s5==1){
+  wrd('5');
+  num1 = num1*10;
+  num1 = num1+5;
+ }
+ if(s6==1){
+  wrd('6');
+  num1 = num1*10;
+  num1 = num1+6;
+ }
+ if(s7==1){
+  wrd('7');
+  num1 = num1*10;
+  num1 = num1+7;
+ }
+ if(s8==1){
+  wrd('8');
+  num1 = num1*10;
+  num1 = num1+8;
+ }
+ if(plus||minus||mul)
+ {
+if(plus)
+{
+op = '+';
+}
+else if(minus)
+{
+op = '-';
+}
+else
+{
+op = '*';
+}
+break;
+ }
+ delay(500);
+}
+// clearing the lcd
+ptr1 = 0, ptr2 = 0;
+w_command(0x01);
+w_command(0x0C);
+w_command(0x80);
+wra('E');
+wra('n');
+wra('t');
+wra('e');
+wra('r');
+wra(' ');
+wra('S');
+wra('e');
+wra('c');
+wra('N');
+wra('O');
+
+
+while(1){
+
+ if(s1==1){
+  wrd('1');
+  num2 = num2*10;
+  num2 = num2+1;
+ }
+ if(s2==1){
+  wrd('2');
+  num2 = num2*10;
+  num2 = num2+2;
+ }
+ if(s3==1){
+  wrd('3');
+  num2 = num2*10;
+  num2 = num2+3;
+ }
+ if(s4==1){
+  wrd('4');
+  num2 = num2*10;
+  num2 = num2+4;
+ }
+
+ if(s5==1){
+  wrd('5');
+  num2 = num2*10;
+  num2 = num2+5;
+ }
+ if(s6==1){
+  wrd('6');
+  num2 = num2*10;
+  num2 = num2+6;
+ }
+ if(s7==1){
+  wrd('7');
+  num2 = num2*10;
+  num2 = num2+7;
+ }
+ if(s8==1){
+  wrd('8');
+  num2 = num2*10;
+  num2 = num2+8;
+ }
+ if(equ)
+ {
+
+break;
+ }
+ delay(500);
+}
+
+
+if(op=='+')
+{
+res = num1+num2;
+}
+else if(op=='-')
+{
+res = num1-num2;
+}
+else
+{
+res = num1*num2;
+}
+
+
+
+while(res)
+{
+a = res%10;
+number[i] = a+48;
+i++;
+res = res/10;
+}
+
+
+while(i>=0)
+{
+displaynum[j] = number[i];
+j++;
+i--;
+}
+i = 0;
+ptr1 = 0, ptr2 = 0;
+w_command(0x01);
+w_command(0x0C);
+w_command(0x80);
+while(i<=j)
+{
+wrd(displaynum[i++]);
+delay(1000);
+}
+delay(100000);
+}
+
+void lcd_init()
+{
+w_command(0x38);
+w_command(0x0C);
+w_command(0x01);
+w_command(0x80);
+       
+}
+
+void w_command(int x)
+{
+    rs = 0;
+P1 = x;
+e = 1;
+delay(5);
+e = 0;
+delay(5);
+}
+
+void w_data(char x)
+{
+rs = 1;
+P1 = x;
+e = 1;
+// delay(0);
+e = 0;
+// delay(0);
+}
+
+
+void delay(int x){
+ int i,j;
+ for(i=0;i<x;i++){
+  for(j=0;j<100;j++){
+}
+}
+}

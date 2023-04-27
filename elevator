@@ -1,0 +1,218 @@
+#include<reg51.h>
+
+#include<math.h>
+
+sbit h = P2 ^ 0;
+sbit i = P2 ^ 1;
+sbit j = P2 ^ 2;
+sbit k = P2 ^ 3;
+sbit l = P2 ^ 4;
+sbit m = P2 ^ 5;
+sbit n = P2 ^ 6;
+sbit o = P2 ^ 7;
+sbit U = P3 ^ 0;
+sbit D = P3 ^ 1;
+sbit a = P1 ^ 0;
+sbit b = P1 ^ 1;
+sbit c = P1 ^ 2;
+sbit d = P1 ^ 3;
+sbit e = P1 ^ 4;
+sbit f = P1 ^ 5;
+sbit g = P1 ^ 6;
+void delay(int x) {
+  int i, j;
+  for (i = 0; i < x; i++) {
+    for (j = 0; j < 10000; j++);
+  }
+}
+void blinkSevenSeg(int i) {
+  a = 0;
+  b = 0;
+  c = 0;
+  e = 0;
+  e = 0;
+  f = 0;
+  g = 0;
+  switch (i) {
+  case 0: {
+    a = 1;
+    b = 1;
+    c = 1;
+    d = 1;
+    e = 1;
+    f = 1;
+    g = 0;
+    break;
+  }
+  case 1: {
+    a = 0;
+    b = 1;
+    c = 1;
+    d = 0;
+    e = 0;
+    f = 0;
+    g = 0;
+    break;
+  }
+  case 2: {
+    a = 1;
+    b = 1;
+    c = 0;
+    d = 1;
+    e = 1;
+    f = 0;
+    g = 1;
+    break;
+  }
+  case 3: {
+    a = 1;
+    b = 1;
+    c = 1;
+    d = 1;
+    e = 0;
+    f = 0;
+    g = 1;
+    break;
+  }
+  case 4: {
+    a = 0;
+    b = 1;
+    c = 1;
+    d = 0;
+    e = 0;
+    f = 1;
+    g = 1;
+    break;
+  }
+  case 5: {
+    a = 1;
+    b = 0;
+    c = 1;
+    d = 1;
+    e = 0;
+    f = 1;
+    g = 1;
+    break;
+  }
+  case 6: {
+    a = 1;
+    b = 0;
+    c = 1;
+    d = 1;
+    e = 1;
+    f = 1;
+    g = 1;
+    break;
+  }
+  case 7: {
+    a = 1;
+    b = 1;
+    c = 1;
+    d = 0;
+    e = 0;
+    f = 0;
+    g = 0;
+    break;
+  }
+  case 8: {
+    a = 1;
+    b = 1;
+    c = 1;
+    d = 1;
+    e = 1;
+    f = 1;
+    g = 1;
+    break;
+  }
+  case 9: {
+    a = 1;
+    b = 1;
+    c = 1;
+    d = 1;
+    e = 0;
+    f = 1;
+    g = 1;
+    break;
+  }
+  default: {
+    a = 0;
+    b = 0;
+    c = 0;
+    d = 0;
+    e = 0;
+    f = 0;
+    g = 1;
+    break;
+  }
+  }
+  delay(10);
+}
+void goFrom(int start, int end) {
+  int z;
+  if (start < end) {
+  U=1;
+    delay(5);
+    for (z = start + 1; z <= end; z++) {
+      blinkSevenSeg(z);
+      delay(5);
+    }
+	U=0;
+  } else {
+  D=1;
+    delay(5);
+    for (z = start - 1; z >= end; z--) {
+      blinkSevenSeg(z);
+      delay(5);
+    }
+	D=0;
+  }
+}
+int main() {
+  int currFloor = 0;
+  blinkSevenSeg(currFloor);
+  h=0;i=0;j=0;k=0;l=0;m=0;n=0;o=0;U=0;D=0;
+  while (1) {
+    if (h == 1) {
+      if (currFloor == 3) {
+        blinkSevenSeg(currFloor);
+      } else {l=1;
+        goFrom(currFloor, 3);
+        currFloor = 3;
+		l=0;
+      }
+	  h=0;
+
+    } else if (i == 1) {
+      if (currFloor == 2) {
+        blinkSevenSeg(currFloor);
+      } else {
+	  m=1;
+        goFrom(currFloor, 2);
+        currFloor = 2;
+      	m=0;
+	  }
+	  i=0;
+    } else if (j == 1) {
+      if (currFloor == 1) {
+        blinkSevenSeg(currFloor);
+      } else {
+	  n=1;
+        goFrom(currFloor, 1);
+        currFloor = 1;
+      n=0;
+	  }
+	  j=0;
+    } else if (k == 1) {
+      if (currFloor == 0) {
+        blinkSevenSeg(currFloor);
+      } else {
+	  o=1;
+        goFrom(currFloor, 0);
+        currFloor = 0;
+      	o=0;
+	  }
+	  k=0;
+    }
+  }
+  return 0;
+}

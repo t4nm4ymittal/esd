@@ -1,0 +1,282 @@
+#include<reg52.h>
+
+ sbit AA = P2 ^ 0;
+ sbit BB = P2 ^ 1;
+ sbit CC = P2 ^ 2;
+ sbit DD = P2 ^ 3;
+ sbit buz = P2 ^ 5;
+ sbit rs = P2 ^ 6;
+ sbit e = P2 ^ 7;
+ sbit led = P2 ^ 4;
+
+
+ void delay(int x) {
+   int i, j;
+   for (i = 0; i < x; i++) {
+     for (j = 0; j < 1000; j++) {}
+   }
+ }
+
+ void w_command(int x) {
+   rs = 0;
+   P3 = x;
+   e = 1;
+   delay(1);
+   e = 0;
+   delay(1);
+ }
+
+ void lcd_init() {
+   w_command(0x38);
+   w_command(0x0C);
+   w_command(0x01);
+   w_command(0x80);
+ }
+
+ void w_data(char x) {
+   rs = 1;
+   P3 = x;
+   e = 1;
+   delay(1);
+   e = 0;
+   delay(1);
+ }
+
+ void main() {
+   int  count=0,t=0;
+   char a = '0', b = '0', c = '0', d = '0',x='0';
+   char prev = '0';
+   int hehe  =0;
+   int ledtimer = 10;
+   AA = 0;
+    buz = 0;
+   BB = 0;
+   CC = 0;
+   DD = 0;
+   led = 1;
+   lcd_init();
+   hehe = 0;
+   while (1) {
+    if(led==0){
+        hehe = 0;
+        t++;
+        ledtimer--;
+        delay(1);
+        if(ledtimer==0){
+            led=1;
+            t=0;
+            ledtimer=10;
+        }
+    }
+     if (AA) {
+        if((prev=='a' && led==0)) continue;
+        if(hehe>2) {
+            led = 1;
+            hehe = 0;
+            continue;
+        }
+       if(led==1) {
+        a++;
+        led=0;
+        hehe = 1;
+       }
+       hehe++;
+
+       count=0;
+       a++;
+       buz = 1;
+       w_command(0x01);
+
+ 
+       w_data(' ');
+       w_data('a');
+       w_data(' ');
+       w_data('b');
+       w_data(' ');
+       w_data('c');
+       w_data(' ');
+       w_data('d');
+       w_data(' ');
+       w_data('x');
+     w_command(0xC0);
+
+       w_data(' ');
+       w_data(a);
+       w_data(' ');
+       w_data(b);
+       w_data(' ');
+       w_data(c);
+       w_data(' ');
+       w_data(d);
+       w_data(' ');
+       w_data(x);
+       prev='a';
+buz=0;
+     }
+
+     else if (BB) {
+        if((prev=='b' && led==0)) continue;
+        if(hehe>2) {
+            led = 1;
+            hehe = 0;
+            continue;
+        }
+       if(led==1){
+         b++;
+         led=0;
+         hehe = 1;
+        }
+        hehe++;
+       count=0;
+       b++;
+       buz = 1;
+       w_command(0x01);
+
+       w_data(' ');
+       w_data('a');
+       w_data(' ');
+       w_data('b');
+       w_data(' ');
+       w_data('c');
+       w_data(' ');
+       w_data('d');
+       w_data(' ');
+       w_data('x');
+       w_command(0xC0);
+
+       w_data(' ');
+       w_data(a);
+       w_data(' ');
+       w_data(b);
+       w_data(' ');
+       w_data(c);
+       w_data(' ');
+       w_data(d);
+       w_data(' ');
+       w_data(x);
+       prev='b';
+       buz=0;
+       
+     }
+
+     else if (CC) {
+        if((prev=='c' && led==0)) continue;
+        if(hehe>2) {
+            led = 1;
+            hehe = 0;
+            continue;
+        }
+       if(led==1){
+        c++;
+        led=0;
+        hehe = 1;
+       }
+       hehe++;
+       count=0;
+       c++;
+       buz = 1;
+       w_command(0x01);
+
+       w_data(' ');
+       w_data('a');
+       w_data(' ');
+       w_data('b');
+       w_data(' ');
+       w_data('c');
+       w_data(' ');
+       w_data('d');
+       w_data(' ');
+       w_data('x');
+       w_command(0xC0);
+
+       w_data(' ');
+       w_data(a);
+       w_data(' ');
+       w_data(b);
+       w_data(' ');
+       w_data(c);
+       w_data(' ');
+       w_data(d);
+       w_data(' ');
+       w_data(x);
+        prev='c';
+       buz=0;
+     }
+     else if (DD) {
+        if((prev=='d' && led==0)) continue;
+        if(hehe>2) {
+            led = 1;
+            hehe = 0;
+            continue;
+        }
+       if(led==1){
+        d++;
+        led=0;
+        hehe = 1;
+       }
+       hehe++;
+       count=0;
+       d++;
+       buz = 1;
+       w_command(0x01);
+
+       w_data(' ');
+       w_data('a');
+       w_data(' ');
+       w_data('b');
+       w_data(' ');
+       w_data('c');
+       w_data(' ');
+       w_data('d');
+       w_data(' ');
+       w_data('x');
+       w_command(0xC0);
+
+       w_data(' ');
+       w_data(a);
+       w_data(' ');
+       w_data(b);
+       w_data(' ');
+       w_data(c);
+       w_data(' ');
+       w_data(d);
+       w_data(' ');
+       w_data(x);
+        prev='d';
+       buz=0;
+     }
+     else{
+        delay(2);
+        count++;
+        if(count==15){
+            count=0;
+            x++;
+        }
+       w_command(0x01);
+
+       w_data(' ');
+       w_data('a');
+       w_data(' ');
+       w_data('b');
+       w_data(' ');
+       w_data('c');
+       w_data(' ');
+       w_data('d');
+       w_data(' ');
+       w_data('x');
+       w_command(0xC0);
+
+       w_data(' ');
+       w_data(a);
+       w_data(' ');
+       w_data(b);
+       w_data(' ');
+       w_data(c);
+       w_data(' ');
+       w_data(d);
+       w_data(' ');
+       w_data(x);
+     }
+     delay(100);
+   }
+ }
